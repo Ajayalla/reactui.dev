@@ -4,6 +4,7 @@ import '@fontsource/inter/variable.css'
 import '@fontsource/merriweather'
 import { NextPage } from 'next'
 import { ReactElement, ReactNode } from 'react'
+import { SessionProvider } from 'next-auth/react'
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -16,7 +17,11 @@ type AppPropsWithLayout = AppProps & {
 const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page)
 
-  return getLayout(<Component {...pageProps} />)
+  return (
+    <SessionProvider session={pageProps.session || undefined}>
+      {getLayout(<Component {...pageProps} />)}
+    </SessionProvider>
+  )
 }
 
 export default App
